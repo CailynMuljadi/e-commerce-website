@@ -1,8 +1,12 @@
+import Container from "@/components/Container";
 import { Button } from "@/components/ui/button"
+import React from "react";
+
 
 const Home=() => {
-  return <div className="p-10 bg-shop-light-pink">
-    <h2 className="text-2xl font-semibold font-poppins">Welcome to our store!</h2>
+  return
+  <Container className="bp-light-pink">
+     <h2 className="text-xl font-semibold font-poppins">Welcome to our store!</h2>
     <p>
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos quibusdam cum, 
       maxime, nihil recusandae atque ex aliquid odit adipisci, necessitatibus commodi. 
@@ -13,7 +17,7 @@ const Home=() => {
       <Button size="lg" variant="destructive">
         Check Out
       </Button>
-    </div>
+    </Container>
 };
 
 export default Home
