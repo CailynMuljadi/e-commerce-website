@@ -54,7 +54,7 @@ const SocialMedia = ({className, iconClassName, tooltipClassName}:Props) => {
         <div className={cn("flex items-center gap-3.5", className)}>
             {socialLink?.map((item) => (
                 <Tooltip key={item?.title}>
-                    <TooltipTrigger asChild>
+                    <TooltipTrigger>
                         <Link
                         key={item?.title} 
                         target="_blank"
@@ -75,4 +75,4 @@ const SocialMedia = ({className, iconClassName, tooltipClassName}:Props) => {
     </TooltipProvider>
 };
 
-export default SocialMedia;
+export { SocialMedia };
