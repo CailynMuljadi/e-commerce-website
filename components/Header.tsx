@@ -7,7 +7,6 @@ import CartIcon from "./CartIcon";
 import FavoriteButton from "./FavoriteButton";
 import SignIn from "./SignIn";
 import MobileMenu from "./MobileMenu";
-import { Sign } from "crypto";
 
 
 const Header = () => {
