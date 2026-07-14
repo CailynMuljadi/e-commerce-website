@@ -1,13 +1,14 @@
 import React from "react";
 import Container from "./Container";
 import Logo from "./Logo";
+import HeaderMenu from "./HeaderMenu";
 
 const Header = () => {
   return (
-    <header className="bg-white py-5 shadow-md"> 
-       <Container>
+    <header className="bg-white py-5 shadow-md border-b border-b-black/20"> 
+       <Container className="flex items-center justify-between">
         <Logo />
-        {/* NavButton */}
+        <HeaderMenu />
         {/* NavAdmin */}
        </Container>
     </header>
