@@ -1,8 +1,10 @@
 import React, { FC } from 'react';
-import { Link, X } from 'lucide-react';
+import Link from "next/link"
+import { X } from 'lucide-react';
 import Logo from './Logo';
 import { headerData } from '@/constants/data';
-import { SocialMedia } from "@/components/SocialMedia"; // Adjust path if neededimport { usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { SocialMedia } from "./SocialMedia"; 
 import { useOutsideClick } from '@/hooks';
 interface SidebarPops{
     isOpen: boolean;
