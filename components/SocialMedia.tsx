@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import Link from "next/link";
+import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 interface Props {
     className?: string;
@@ -60,13 +60,13 @@ const SocialMedia = ({className, iconClassName, tooltipClassName}:Props) => {
                         target="_blank"
                         rel="noopener noreferrer"
                         href={item?.link}
-                        className={cn("p-2 border rounded-full hover:text-white hover:border-shop-light-green hoverEffect", iconClassName)}
+                        className={cn("p-2 hover:text-whitehoverEffect", iconClassName)}
                         >
                             {item?.icon} 
                         </Link>
                     
                     </TooltipTrigger>
-                    <TooltipContent className={cn("bg-white text-darkColor font-semibold border border-shop-light-green", tooltipClassName)}>
+                    <TooltipContent className={cn("bg-white text-darkColor font-semibold", tooltipClassName)}>
                         {item?.title}
                     </TooltipContent>
                 </Tooltip>
