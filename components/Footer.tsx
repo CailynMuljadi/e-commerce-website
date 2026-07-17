@@ -55,13 +55,13 @@ const Footer = () => {
             <SubText>Subscribe to our newsletter to receive updates and exclusive offers</SubText>
             <form className="space-y-3">
               <Input placeholder="Enter your email" type="email" required/>
-              <button className="w-full">Subscribe</button>
+              <button className="w-full bg-black text-white">Subscribe</button>
             </form>
           </div>
         </div>
         <div className="py-6 border-t text-center text-sm text-gray-600">
             {new Date().getFullYear()}
-            <Logo className="text-sm"/>
+             <Logo className="text-sm"/>
             . All rights reserved.
         </div>
       </Container>
