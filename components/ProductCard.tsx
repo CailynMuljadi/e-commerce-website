@@ -67,17 +67,21 @@ const ProductCard = ({ product }: { product: Product }) => {
           )}
 
           <Link href={`/products/${product.slug}`} className="block">
-            <h3 className="font-semibold text-gray-800 text-sm line-clamp-2 hover:text-emerald-600 transition-colors">
+            <h3 className="font-semibold text-gray-800 text-xs md:text-sm line-clamp-2 hover:text-emerald-600 transition-colors">
               {product.name}
             </h3>
           </Link>
-          <span className="text-sm font-bold text-gray-900 block pt-0.5">{formattedPrice}</span>
+          
+          {/* FIX: Price is now Green, Extra Bold, and Bigger than Title */}
+          <span className="text-base md:text-lg font-extrabold text-emerald-600 block pt-0.5">
+            {formattedPrice}
+          </span>
+          
           <p className="text-xs text-gray-500 font-normal leading-relaxed line-clamp-2 pt-1">
             {product.description}
           </p>
         </div>
 
-        {/* BOTTOM ACTION ROW: Buttons Left, Star Rating Right */}
         <div className="pt-2 border-t border-gray-100 flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5">
             <button 
@@ -94,7 +98,6 @@ const ProductCard = ({ product }: { product: Product }) => {
             </button>
           </div>
 
-          {/* Star Rating Layout */}
           {product.rating && (
             <div className="flex items-center gap-0.5 text-amber-500 font-bold text-xs bg-amber-50/50 px-2 py-1 rounded-md">
               <span>{product.rating.toFixed(1)}</span>

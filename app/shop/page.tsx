@@ -1,3 +1,4 @@
+// app/shop/page.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { fetchFromAPI } from "@/lib/api";
@@ -8,7 +9,11 @@ export default function ShopPage() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [maxPrice, setMaxPrice] = useState(25000000); // 25M IDR scale bar cap
+  
+  // FIX: Separate explicit manual numeric limits inputs state
+  const [minPrice, setMinPrice] = useState<number | "">("");
+  const [maxPrice, setMaxPrice] = useState<number | "">("");
+  
   const [minRating, setMinRating] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -26,20 +31,23 @@ export default function ShopPage() {
     loadShopData();
   }, []);
 
-  // Compute clean non-duplicating dynamic arrays for unique filter categories
   const categories = ["All", ...Array.from(new Set(products.map((p: any) => p.category?.name).filter(Boolean)))];
 
   const filteredProducts = products.filter((p: any) => {
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
     const matchesCat = selectedCategory === "All" ? true : p.category?.name === selectedCategory;
-    const matchesPrice = p.price <= maxPrice;
     const matchesRating = (p.rating || 0) >= minRating;
-    return matchesSearch && matchesCat && matchesPrice && matchesRating;
+    
+    // Evaluate input bounds safely falling back to standard limits if empty string
+    const bottomLimit = minPrice === "" ? 0 : minPrice;
+    const upperLimit = maxPrice === "" ? Infinity : maxPrice;
+    const matchesPriceBounds = p.price >= bottomLimit && p.price <= upperLimit;
+
+    return matchesSearch && matchesCat && matchesRating && matchesPriceBounds;
   });
 
   return (
     <Container className="py-8 space-y-6">
-      {/* Search Header Controls */}
       <div className="w-full space-y-4">
         <h1 className="text-2xl font-bold">Marketplace Catalog</h1>
         <input
@@ -51,9 +59,7 @@ export default function ShopPage() {
         />
       </div>
 
-      {/* Main Workspace Column Split Layout */}
       <div className="flex gap-8 items-start">
-        {/* Left Side: Product Display Output */}
         <div className="flex-1">
           {loading ? (
             <p className="text-gray-500">Reindexing warehouse inventory...</p>
@@ -68,11 +74,11 @@ export default function ShopPage() {
           )}
         </div>
 
-        {/* Right Side Filter Panel: Automatically hidden on hidden/sm/mobile, becomes blocks at md breakpoint */}
-        <aside className="hidden md:block w-64 bg-white border p-5 rounded-xl space-y-6 sticky top-4 shrink-0 shadow-sm">
+        {/* Right Side Filter Panel - Hidden on Mobile, Displays at md viewports */}
+        <aside className="hidden md:block w-64 bg-white border p-5 rounded-xl space-y-6 sticky top-20 shrink-0 shadow-sm">
           <h2 className="font-bold text-gray-900 text-sm border-b pb-2">Refine Search</h2>
 
-          {/* Categories Option List */}
+          {/* Categories */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-gray-500 uppercase">Categories</label>
             <div className="flex flex-col gap-1.5">
@@ -88,26 +94,34 @@ export default function ShopPage() {
             </div>
           </div>
 
-          {/* Price Range Controls Slider */}
+          {/* FIX: Manual Pricing Inputs Fields Block */}
           <div className="space-y-2">
-            <div className="flex justify-between text-xs font-bold text-gray-500 uppercase">
-              <span>Max Price</span>
+            <label className="text-xs font-bold text-gray-500 uppercase block">Price Range (Rp)</label>
+            <div className="flex flex-col gap-2">
+              <div className="space-y-1">
+                <span className="text-[10px] uppercase font-bold text-gray-400">Min Price</span>
+                <input 
+                  type="number"
+                  placeholder="e.g. 10000"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                  className="w-full p-1.5 border rounded-lg text-xs focus:outline-emerald-600"
+                />
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] uppercase font-bold text-gray-400">Max Price</span>
+                <input 
+                  type="number"
+                  placeholder="e.g. 5000000"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                  className="w-full p-1.5 border rounded-lg text-xs focus:outline-emerald-600"
+                />
+              </div>
             </div>
-            <input
-              type="range"
-              min="0"
-              max="25000000"
-              step="500000"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="w-full accent-emerald-600 cursor-pointer"
-            />
-            <p className="text-xs font-semibold text-gray-700">
-              Under {new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(maxPrice)}
-            </p>
           </div>
 
-          {/* Minimum Rating Controls Toggle */}
+          {/* Minimum Rating Selection */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-gray-500 uppercase">Minimum Rating</label>
             <select
@@ -125,4 +139,4 @@ export default function ShopPage() {
       </div>
     </Container>
   );
-};
+}

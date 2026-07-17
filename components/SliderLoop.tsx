@@ -1,4 +1,3 @@
-// components/ProductSlider.tsx
 import React from "react";
 import ProductCard, { Product } from "./ProductCard";
 
