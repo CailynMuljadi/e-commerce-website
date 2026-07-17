@@ -27,3 +27,10 @@ export const categoriesData =[
     { title: "Snacks", href: "snacks" },
     { title: "Sports", href: "sports" }
 ];
+
+export const productType =[
+    { title: "Beauty", value: "beauty"},
+    { title: "Electronics", value: "electronics"},
+    { title: "Fashion", value: "fashion"},
+    { title: "Others", value: "others"}
+]

@@ -19,7 +19,7 @@ return (
 
 
         <div>
-            <Image src={banner} alt="banner_1" className="hidden md:inline-flex w-96"/>
+            <Image src={banner} alt="banner_1" className="hidden md:inline-flex w-80"/>
         </div>
         
     </div>
