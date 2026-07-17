@@ -33,10 +33,24 @@ const ProductGrid = () => {
     const featuredProducts = products.filter((p: any) => p.isFeatured === true);
     const newArrivals = products.filter((p: any) => p.isNewArrival === true);
 
-    // 2. Separate active dynamic array matching selection for lower grid mapping
+    // 2. --- UPDATED FILTERING LOGIC FOR OTHERS CATEGORY ---
     const filteredProducts = products.filter((product: any) => {
         const productCategoryName = product.category?.name || "";
-        return productCategoryName.toLowerCase() === selectedTab.toLowerCase();
+        const formattedCategory = productCategoryName.trim().toLowerCase();
+        const formattedTab = selectedTab.trim().toLowerCase();
+
+        // If the user clicks the "Others" tab
+        if (formattedTab === "others") {
+            // Include everything that is NOT beauty, electronics, or fashion
+            return (
+                formattedCategory !== "beauty" &&
+                formattedCategory !== "electronics" &&
+                formattedCategory !== "fashion"
+            );
+        }
+
+        // Otherwise, perform the normal explicit category match
+        return formattedCategory === formattedTab;
     });
 
     return ( 
@@ -51,14 +65,12 @@ const ProductGrid = () => {
                     </div>
                 ) : (
                     <div className="space-y-12">
-                        {/* Featured slider display block */}
                         <ProductSlider 
                             title="Featured Collections" 
                             subtitle="Top picks handpicked for your marketplace layout" 
                             products={featuredProducts} 
                         />
 
-                        {/* New Arrivals slider display block */}
                         <ProductSlider 
                             title="New Arrivals" 
                             subtitle="The latest arrivals dropped hot from our storefronts" 
@@ -70,10 +82,8 @@ const ProductGrid = () => {
 
             {/* PART 2: BOTTOM SECTION - Filters & Matching Category Grid */}
             <div className="space-y-8 pt-6 border-t border-gray-100">
-                {/* The Filter Tab Bar sits explicitly below the sliders now */}
                 <HomeTabBar selectedTab={selectedTab} onTabSelect={setSelectedTab} />
                 
-                {/* Render loop displaying products that fit the active tab category */}
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
                         <p className="text-sm font-medium animate-pulse text-gray-400">Loading collection grid...</p>
