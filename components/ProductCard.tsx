@@ -6,6 +6,7 @@ import React from "react";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import { useMarketStore } from "@/lib/store";
 
+// Extended product interface to safely type all your fields
 export interface Product {
   id: string;
   name: string;
@@ -15,9 +16,17 @@ export interface Product {
   rating?: number;
   imageUrl?: string | null;
   discountPercentage?: number;
+  isFeatured?: boolean;
+  isNewArrival?: boolean;
+  condition?: "New" | "Used";
+  stock?: number;
   store?: {
+    id: string;
     name: string;
+    slug: string;
     isOfficial?: boolean;
+    city?: string;
+    rating?: number;
   };
 }
 
@@ -56,14 +65,18 @@ const ProductCard = ({ product }: { product: Product }) => {
       <div className="p-4 flex flex-col flex-1 justify-between gap-3">
         <div className="space-y-1">
           {product.store && (
-            <div className="flex items-center gap-1 text-xs text-gray-500 font-medium">
+            // ✅ FIX: Link directly to the store page using its slug
+            <Link 
+              href={`/store/${product.store.slug || product.store.id}`}
+              className="flex items-center gap-1 text-xs text-gray-500 font-medium hover:text-emerald-600 transition-colors w-fit"
+            >
               {product.store.isOfficial && (
                 <span className="bg-emerald-600 text-white px-1 rounded text-[10px] font-bold uppercase tracking-wider">
                   Official
                 </span>
               )}
-              <span className="truncate">{product.store.name}</span>
-            </div>
+              <span className="truncate underline decoration-dotted">{product.store.name}</span>
+            </Link>
           )}
 
           <Link href={`/products/${product.slug}`} className="block">
@@ -72,14 +85,15 @@ const ProductCard = ({ product }: { product: Product }) => {
             </h3>
           </Link>
           
-          {/* FIX: Price is now Green, Extra Bold, and Bigger than Title */}
           <span className="text-base md:text-lg font-extrabold text-emerald-600 block pt-0.5">
             {formattedPrice}
           </span>
           
-          <p className="text-xs text-gray-500 font-normal leading-relaxed line-clamp-2 pt-1">
-            {product.description}
-          </p>
+          {/* Quick structural tags on card */}
+          <div className="flex gap-1 text-[10px] pt-1">
+            {product.isNewArrival && <span className="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded font-medium">New Arrival</span>}
+            {product.condition && <span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-medium">{product.condition}</span>}
+          </div>
         </div>
 
         <div className="pt-2 border-t border-gray-100 flex items-center justify-between gap-2">
