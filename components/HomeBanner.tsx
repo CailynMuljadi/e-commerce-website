@@ -9,7 +9,7 @@ const HomeBanner = () => {
 return (
     <div className= "py-16 md:py-0 bg-shop-light-pink rounded-lg px-10 lg:px-24 flex items-center justify-between">
         <div className="space-y-5">
-            <Title>Grab Upto 50% off on<br />
+            <Title>Grab Up to<span className="text-shop-orange"> 50%</span> off on<br />
             Our Mid-Year Sale 
             </Title>
             <Link href={"/shop"} className="bg-shop-orange/90 text-white/90 px-5 py-2 rounded-md text-sm font-semibold hover:text-white hover:bg-shop-orange hoverEffect">
