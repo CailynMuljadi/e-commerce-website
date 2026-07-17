@@ -7,7 +7,7 @@ const Logo = ({className, spanDesign}: {className?: string, spanDesign?: string}
     <h2 className={cn("text-exl text-shop-dark-green font-black tracking-wider uppercase hover:text-shop-light-green hoverEffect group font-sans"
         ,className)}>
 
-        Shop<span className={cn("text-shop-light-green group-hover:text-shop-dark-green hoverEffect", spanDesign)}>cart</span>
+        Shop<span className={cn("text-shop-light-green group-hover:text-shop-dark-green hoverEffect", spanDesign)}>centre</span>
     </h2>
   </Link>;
 };

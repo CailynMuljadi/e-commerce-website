@@ -19,9 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-poppins antialiased">
+      <div className="flex flex-col">
         <Header />
-        {children}
+        <main className="flex-1">{children}</main>
         <Footer />
+      </div>
       </body>
     </html>
   );
