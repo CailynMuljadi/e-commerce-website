@@ -55,7 +55,7 @@ const Footer = () => {
             <SubText>Subscribe to our newsletter to receive updates and exclusive offers</SubText>
             <form className="space-y-3">
               <Input placeholder="Enter your email" type="email" required/>
-              <button className="w-full bg-black text-white">Subscribe</button>
+              <button className="w-full bg-black text-white rounded-2xl">Subscribe</button>
             </form>
           </div>
         </div>

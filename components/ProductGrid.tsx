@@ -1,6 +1,6 @@
 "use client";
 
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import HomeTabBar from './HomeTabBar';
 import { productType } from '@/constants/data';
 import { fetchFromAPI } from "@/lib/api";
@@ -8,16 +8,15 @@ import ProductCard from './ProductCard';
 import ProductSlider from './SliderLoop';
 
 const ProductGrid = () => {
-    const [products, setProducts] = useState ([]);
+    const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [selectedTab, setSelectedTab] = useState (productType[0]?.title||"" );
+    const [selectedTab, setSelectedTab] = useState(productType[0]?.title || "");
     
     useEffect(() => {
         const getProducts = async () => {
             setLoading(true);
             try {
                 const response = await fetchFromAPI("/products");
-                // Check if your utility returns a wrapped object or raw list array
                 const dataList = response.data || response;
                 setProducts(dataList);
             } catch (error) {
@@ -30,36 +29,71 @@ const ProductGrid = () => {
         getProducts();
     }, []);
 
+    // 1. Separate featured and new arrival entries for upper sliders
     const featuredProducts = products.filter((p: any) => p.isFeatured === true);
     const newArrivals = products.filter((p: any) => p.isNewArrival === true);
 
-  return ( <div className="space-y-10">
-    <HomeTabBar selectedTab={selectedTab} onTabSelect={setSelectedTab} />
-    {loading ? (
-    <div className="flex items-center justify-center py-10">
-                    <p className="text-sm font-semibold animate-pulse text-gray-500">
-                        Loading marketplace streams...
-                    </p>
-                </div>
-            ) : (
-                <div className="space-y-12">
-                    {/* Featured slider display block embedded inside the grid ecosystem */}
-                    <ProductSlider 
-                        title="Featured Collections" 
-                        subtitle="Top picks handpicked for your marketplace layout" 
-                        products={featuredProducts} 
-                    />
+    // 2. Separate active dynamic array matching selection for lower grid mapping
+    const filteredProducts = products.filter((product: any) => {
+        const productCategoryName = product.category?.name || "";
+        return productCategoryName.toLowerCase() === selectedTab.toLowerCase();
+    });
 
-                    {/* New Arrivals slider display block embedded inside the grid ecosystem */}
-                    <ProductSlider 
-                        title="New Arrivals" 
-                        subtitle="The latest arrivals dropped hot from our storefronts" 
-                        products={newArrivals} 
-                    />
-                </div>
-            )}
-    </div>
-  );
+    return ( 
+        <div className="space-y-12">
+            {/* PART 1: TOP SECTION - The Sliders (Featured & Arrivals) */}
+            <div>
+                {loading ? (
+                    <div className="flex items-center justify-center py-10">
+                        <p className="text-sm font-semibold animate-pulse text-gray-500">
+                            Loading marketplace streams...
+                        </p>
+                    </div>
+                ) : (
+                    <div className="space-y-12">
+                        {/* Featured slider display block */}
+                        <ProductSlider 
+                            title="Featured Collections" 
+                            subtitle="Top picks handpicked for your marketplace layout" 
+                            products={featuredProducts} 
+                        />
+
+                        {/* New Arrivals slider display block */}
+                        <ProductSlider 
+                            title="New Arrivals" 
+                            subtitle="The latest arrivals dropped hot from our storefronts" 
+                            products={newArrivals} 
+                        />
+                    </div>
+                )}
+            </div>
+
+            {/* PART 2: BOTTOM SECTION - Filters & Matching Category Grid */}
+            <div className="space-y-8 pt-6 border-t border-gray-100">
+                {/* The Filter Tab Bar sits explicitly below the sliders now */}
+                <HomeTabBar selectedTab={selectedTab} onTabSelect={setSelectedTab} />
+                
+                {/* Render loop displaying products that fit the active tab category */}
+                {loading ? (
+                    <div className="flex items-center justify-center py-12">
+                        <p className="text-sm font-medium animate-pulse text-gray-400">Loading collection grid...</p>
+                    </div>
+                ) : filteredProducts.length === 0 ? (
+                    <div className="text-center py-16 border border-dashed border-gray-200 rounded-xl bg-gray-50/50">
+                        <p className="text-sm font-medium text-gray-500">
+                            No products found in the "{selectedTab}" category right now.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                        {filteredProducts.map((product: any) => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default ProductGrid;

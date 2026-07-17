@@ -1,4 +1,6 @@
-// components/ProductCard.tsx
+"use client";
+import { Heart, ShoppingBag } from "lucide-react";
+import { useMarketStore } from "@/lib/store";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -28,6 +30,12 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   // Automatic placeholder generator if imageUrl is missing or broken
   const displayImage = product.imageUrl || "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=500&q=80";
+
+
+  const { cart, favorites, addToCart, toggleFavorite } = useMarketStore();
+  
+  const isFavorited = favorites.includes(product.id);
+  const isInCart = cart.includes(product.id);
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col h-full group">
@@ -77,6 +85,28 @@ const ProductCard = ({ product }: { product: Product }) => {
           </p>
         </div>
 
+      <div className="pt-2 border-t border-gray-100 flex items-center justify-between gap-2">
+      <div className="flex items-center gap-1.5">
+        
+        {/* FAVORITE ACTION BUTTON */}
+        <button 
+          onClick={() => toggleFavorite(product.id)}
+          className={`p-2 rounded-lg transition-colors group/btn ${isFavorited ? "bg-red-50 text-red-500" : "bg-gray-50 text-gray-600 hover:bg-red-50 hover:text-red-500"}`}
+        >
+          <Heart className={`w-4 h-4 transition-transform group-hover/btn:scale-110 ${isFavorited ? "fill-red-500" : ""}`} />
+        </button>
+
+        {/* SHOPPING CART ACTION BUTTON */}
+        <button 
+          onClick={() => addToCart(product.id)}
+          className={`p-2 rounded-lg transition-colors group/btn ${isInCart ? "bg-emerald-50 text-emerald-600" : "bg-gray-50 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600"}`}
+        >
+          <ShoppingBag className="w-4 h-4 transition-transform group-hover/btn:scale-110" />
+        </button>
+        
+      </div>
+      </div>
+        
         {/* Price Tag Details */}
         <div className="pt-2">
           <span className="text-base font-bold text-gray-900">{formattedPrice}</span>
