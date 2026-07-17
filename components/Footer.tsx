@@ -7,6 +7,7 @@ import { SubText } from "./ui/text";
 import { SubTitle } from "./ui/text";
 import { categoriesData, quickLinksData } from "@/constants/data";
 import Link from "next/link";
+import { Input } from "./ui/input";
 
 const Footer = () => {
   return (
@@ -49,7 +50,19 @@ const Footer = () => {
               ))}
             </ul>
             </div>
-          <div></div>
+          <div className="space-y-4">
+            <SubTitle>Newsletter</SubTitle>
+            <SubText>Subscribe to our newsletter to receive updates and exclusive offers</SubText>
+            <form className="space-y-3">
+              <Input placeholder="Enter your email" type="email" required/>
+              <button className="w-full">Subscribe</button>
+            </form>
+          </div>
+        </div>
+        <div className="py-6 border-t text-center text-sm text-gray-600">
+            {new Date().getFullYear()}
+            <Logo className="text-sm"/>
+            . All rights reserved.
         </div>
       </Container>
     </footer>
