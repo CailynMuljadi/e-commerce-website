@@ -17,7 +17,7 @@ export const quickLinksData = [
 export const categoriesData =[
     { title: "Beauty", href: "beauty" },
     { title: "Beverages", href: "beverages" },
-    { title: "Books & Stationary", href: "books-and-stationary" },
+    { title: "Books & Stationery", href: "books-and-stationery" },
     { title: "Electronics", href: "electronics" },
     { title: "Fashion", href: "fashion" },
     { title: "Groceries", href: "groceries" },

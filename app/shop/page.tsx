@@ -1,21 +1,26 @@
 // app/shop/page.tsx
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { fetchFromAPI } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import Container from "@/components/Container";
 
-export default function ShopPage() {
+function ShopContent() {
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  
-  // FIX: Separate explicit manual numeric limits inputs state
   const [minPrice, setMinPrice] = useState<number | "">("");
   const [maxPrice, setMaxPrice] = useState<number | "">("");
-  
   const [minRating, setMinRating] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  // Sync the search field with the URL header parameters instantly
+  useEffect(() => {
+    const urlQuery = searchParams.get("search") || "";
+    setSearch(urlQuery);
+  }, [searchParams]);
 
   useEffect(() => {
     const loadShopData = async () => {
@@ -34,11 +39,11 @@ export default function ShopPage() {
   const categories = ["All", ...Array.from(new Set(products.map((p: any) => p.category?.name).filter(Boolean)))];
 
   const filteredProducts = products.filter((p: any) => {
+    // The query search filter checks names structural descriptions
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
     const matchesCat = selectedCategory === "All" ? true : p.category?.name === selectedCategory;
     const matchesRating = (p.rating || 0) >= minRating;
     
-    // Evaluate input bounds safely falling back to standard limits if empty string
     const bottomLimit = minPrice === "" ? 0 : minPrice;
     const upperLimit = maxPrice === "" ? Infinity : maxPrice;
     const matchesPriceBounds = p.price >= bottomLimit && p.price <= upperLimit;
@@ -74,10 +79,10 @@ export default function ShopPage() {
           )}
         </div>
 
-        {/* Right Side Filter Panel - Hidden on Mobile, Displays at md viewports */}
+        {/* Right Side Filter Panel */}
         <aside className="hidden md:block w-64 bg-white border p-5 rounded-xl space-y-6 sticky top-20 shrink-0 shadow-sm">
           <h2 className="font-bold text-gray-900 text-sm border-b pb-2">Refine Search</h2>
-
+          
           {/* Categories */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-gray-500 uppercase">Categories</label>
@@ -94,34 +99,28 @@ export default function ShopPage() {
             </div>
           </div>
 
-          {/* FIX: Manual Pricing Inputs Fields Block */}
+          {/* Pricing bounds input */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-gray-500 uppercase block">Price Range (Rp)</label>
             <div className="flex flex-col gap-2">
-              <div className="space-y-1">
-                <span className="text-[10px] uppercase font-bold text-gray-400">Min Price</span>
-                <input 
-                  type="number"
-                  placeholder="e.g. 10000"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value === "" ? "" : Number(e.target.value))}
-                  className="w-full p-1.5 border rounded-lg text-xs focus:outline-emerald-600"
-                />
-              </div>
-              <div className="space-y-1">
-                <span className="text-[10px] uppercase font-bold text-gray-400">Max Price</span>
-                <input 
-                  type="number"
-                  placeholder="e.g. 5000000"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value === "" ? "" : Number(e.target.value))}
-                  className="w-full p-1.5 border rounded-lg text-xs focus:outline-emerald-600"
-                />
-              </div>
+              <input 
+                type="number"
+                placeholder="Min Price"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                className="w-full p-1.5 border rounded-lg text-xs focus:outline-emerald-600"
+              />
+              <input 
+                type="number"
+                placeholder="Max Price"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                className="w-full p-1.5 border rounded-lg text-xs focus:outline-emerald-600"
+              />
             </div>
           </div>
 
-          {/* Minimum Rating Selection */}
+          {/* Rating */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-gray-500 uppercase">Minimum Rating</label>
             <select
@@ -132,11 +131,19 @@ export default function ShopPage() {
               <option value="0">All Ratings</option>
               <option value="4.5">⭐ 4.5 & up</option>
               <option value="4.0">⭐ 4.0 & up</option>
-              <option value="3.5">⭐ 3.5 & up</option>
             </select>
           </div>
         </aside>
       </div>
     </Container>
+  );
+}
+
+// Next.js requires useSearchParams to be wrapped inside Suspense bounds
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<p className="text-center py-12 text-gray-400">Loading catalog frameworks...</p>}>
+      <ShopContent />
+    </Suspense>
   );
 }
