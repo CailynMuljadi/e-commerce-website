@@ -4,17 +4,20 @@ import { fetchFromAPI } from "@/lib/api";
 import ProductCard from "@/components/ProductCard";
 import Container from "@/components/Container";
 
-interface PageProps {
+// ✅ FIXED: Renamed our local interface to avoid conflicting with generic Next.js page type systems
+interface CategoryPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default async function CategoryPage({ params }: PageProps) {
+// ✅ FIXED: Using the newly updated type structure name here
+export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
   
-  // Convert URL slugs back into printable category text (e.g., "home-appliances" -> "Home Appliances")
-  const decodedCategory = decodeURIComponent(slug)
+  // Keep this for the visible page title at the top of the screen
+  const displayTitle = decodeURIComponent(slug)
     .replace(/-/g, " ")
-    .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase());
+    .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())
+    .replace("And", "&"); 
 
   let products = [];
   try {
@@ -24,29 +27,39 @@ export default async function CategoryPage({ params }: PageProps) {
     console.error("Error loading category view:", err);
   }
 
-  // Filter products by testing structural names
+  // The slug-based grid filter logic
   const filteredProducts = products.filter((p: any) => {
-    const categoryName = p.category?.name || "Others";
+    const productSlug = p.category?.slug || "others";
     
-    // Check if the current category falls into your "Others" catch-all rule
-    if (decodedCategory.toLowerCase() === "others") {
-      const coreCategories = ["beauty", "beverages", "books & stationery", "electronics", "fashion", "groceries", "home appliances", "muslim wear", "snacks", "sports"];
-      return !coreCategories.includes(categoryName.toLowerCase());
+    if (slug.toLowerCase() === "others") {
+      const coreSlugs = [
+        "beauty", 
+        "beverages", 
+        "books-and-stationery", 
+        "electronics", 
+        "fashion", 
+        "groceries", 
+        "home-appliances", 
+        "muslim-wear", 
+        "snacks", 
+        "sports"
+      ];
+      return !coreSlugs.includes(productSlug.toLowerCase());
     }
 
-    return categoryName.toLowerCase() === decodedCategory.toLowerCase();
+    return productSlug.toLowerCase() === slug.toLowerCase();
   });
 
   return (
     <Container className="py-8 space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{decodedCategory}</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{displayTitle}</h1>
         <p className="text-sm text-gray-500">Showing {filteredProducts.length} items found under this shelf section.</p>
       </div>
 
       {filteredProducts.length === 0 ? (
         <div className="text-center py-16 border border-dashed rounded-xl text-gray-400">
-          No warehouse stock listed under {decodedCategory} right now.
+          No warehouse stock listed under {displayTitle} right now.
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
