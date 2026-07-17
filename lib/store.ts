@@ -7,6 +7,7 @@ interface StoreState {
   favorites: string[]; // Stores product IDs
   addToCart: (id: string) => void;
   toggleFavorite: (id: string) => void;
+  clearItems: (ids:string[]) => void;
 }
 
 // Persist automatically saves the lists to localStorage so counts survive page refreshes!
@@ -26,6 +27,12 @@ export const useMarketStore = create<StoreState>()(
           favorites: state.favorites.includes(id)
             ? state.favorites.filter((favId) => favId !== id)
             : [...state.favorites, id],
+        })),  
+
+        clearItems: (ids: string[]) => 
+        set((state) => ({
+          cart: state.cart.filter((id) => !ids.includes(id)),
+          favorites: state.favorites.filter((id) => !ids.includes(id)),
         })),
     }),
     { name: "market-storage" }

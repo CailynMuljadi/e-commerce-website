@@ -3,6 +3,8 @@ import React, { useState, useEffect, use } from "react";
 import { fetchFromAPI } from "@/lib/api";
 import Image from "next/image";
 import Container from "@/components/Container";
+import { useMarketStore } from "@/lib/store";
+
 
 interface CheckoutProps {
   searchParams: Promise<{ items?: string }>;
@@ -31,13 +33,18 @@ export default function CheckoutPage({ searchParams }: CheckoutProps) {
   }, [items]);
 
   const totalCost = checkoutProducts.reduce((sum, item: any) => sum + item.price, 0);
-
+  
+  const { clearItems } = useMarketStore();
+  
   const handleOrderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setProcessing(true);
     
     // Simulate payment gateway delay networks
     setTimeout(() => {
+      const idsToClear = checkoutProducts.map((p: any) => p.id);
+      clearItems(idsToClear);
+
       setProcessing(false);
       setSuccess(true);
     }, 2000);
