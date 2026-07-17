@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en">
-      <body className="font-poppins antialiased">
+      <body className="font-poppins antialiased" suppressHydrationWarning>
       <div className="flex flex-col">
         <Header />
         <main className="flex-1">{children}</main>
