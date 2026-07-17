@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react';
 import HomeTabBar from './HomeTabBar';
 import { productType } from '@/constants/data';
 import { fetchFromAPI } from "@/lib/api";
-import ProductCard from "./Productcard";
+import ProductCard from './ProductCard';
 import ProductSlider from './SliderLoop';
 
 const ProductGrid = () => {
