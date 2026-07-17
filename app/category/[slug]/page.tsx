@@ -30,7 +30,7 @@ export default async function CategoryPage({ params }: PageProps) {
     
     // Check if the current category falls into your "Others" catch-all rule
     if (decodedCategory.toLowerCase() === "others") {
-      const coreCategories = ["beauty", "beverages", "books & stationary", "electronics", "fashion", "groceries", "home appliances", "muslim wear", "snacks", "sports"];
+      const coreCategories = ["beauty", "beverages", "books & stationery", "electronics", "fashion", "groceries", "home appliances", "muslim wear", "snacks", "sports"];
       return !coreCategories.includes(categoryName.toLowerCase());
     }
 
